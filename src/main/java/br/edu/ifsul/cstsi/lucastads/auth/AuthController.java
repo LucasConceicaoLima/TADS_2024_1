@@ -7,16 +7,19 @@ import br.edu.ifsul.cstsi.lucastads.users.UserRepository;
 import br.edu.ifsul.cstsi.lucastads.users.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -32,7 +35,7 @@ public class AuthController {
     @Autowired
     private PerfilRepository perfilRepository;
     @PostMapping("/login")
-    public ResponseEntity login (@RequestBody LoginRequestDTO body){
+    public ResponseEntity login (@Valid @RequestBody LoginRequestDTO body){
         var authenticationDTO = new UsernamePasswordAuthenticationToken(body.email(), body.password()); //converte o DTO em DTO do Spring Security
 
         var authentication = manager.authenticate(authenticationDTO); //autentica o usuário (esse objeto contém o usuário e a senha)
@@ -56,5 +59,17 @@ public class AuthController {
             return ResponseEntity.ok(new ResponseDTO(newUser.getName(), token));
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }
