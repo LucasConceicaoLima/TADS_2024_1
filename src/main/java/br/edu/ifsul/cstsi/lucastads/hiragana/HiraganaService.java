@@ -1,4 +1,4 @@
-package br.edu.ifsul.cstsi.lucastads;
+package br.edu.ifsul.cstsi.lucastads.hiragana;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

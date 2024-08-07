@@ -1,4 +1,4 @@
-package br.edu.ifsul.cstsi.lucastads;
+package br.edu.ifsul.cstsi.lucastads.hiragana;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

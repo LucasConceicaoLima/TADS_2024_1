@@ -1,4 +1,4 @@
-package br.edu.ifsul.cstsi.lucastads;
+package br.edu.ifsul.cstsi.lucastads.hiragana;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
